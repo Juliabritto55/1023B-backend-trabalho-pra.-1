@@ -1,21 +1,19 @@
-import express, { Request, Response, NextFunction } from 'express'
-import 'dotenv/config'
-import rotasNaoAutenticadas from './rotas/rotas-nao-autenticadas.js'
-import rotasAutenticadas from './rotas/rotas-autenticadas.js'
-import Auth from './middlewares/auth.js'
-import cors from 'cors'
-const app = express()
-app.use(cors())
+// src/index.ts
+import 'dotenv/config';
+import express from 'express';
+import cors from 'cors';
+import rotasNaoAuth from './rotas/rotas-nao-autenticadas.js';
+import rotasAuth from './rotas/rotas-autenticadas.js';
 
-app.use(express.json())
+const app = express();
+app.use(cors());
+app.use(express.json());
 
+// rotas públicas
+app.use('/', rotasNaoAuth);
 
-// Usando as rotas definidas em rotas.ts
-app.use(rotasNaoAutenticadas)
-app.use(Auth)
-app.use(rotasAutenticadas)
+// rotas autenticadas
+app.use('/', rotasAuth);
 
-// Criando o servidor na porta 8000 com o express
-app.listen(8000, () => {
-    console.log('Server is running on port 8000')
-})
+const PORT = process.env.PORT || 3333;
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
